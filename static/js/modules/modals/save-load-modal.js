@@ -412,17 +412,25 @@ export class SaveLoadModal {
                         await this.performSave(slot, sessionId);
                     } else {
                         // Manual save exists - ask for confirmation
-                        if (this.uiManager.modalManager) {
-                            this.uiManager.modalManager.showChoiceModal(
-                                'Overwrite Save?',
-                                ['Yes, overwrite this save', 'No, cancel'],
-                                async (choice) => {
-                                    if (choice === 1) {
-                                        await this.performSave(slot, sessionId);
+                        // Hide save modal first to avoid stacking issues
+                        this.hide();
+                        
+                        setTimeout(() => {
+                            if (this.uiManager.modalManager) {
+                                this.uiManager.modalManager.showChoiceModal(
+                                    'Overwrite Save?',
+                                    ['Yes, overwrite this save', 'No, cancel'],
+                                    async (choice) => {
+                                        if (choice === 1) {
+                                            await this.performSave(slot, sessionId);
+                                        } else {
+                                            // User cancelled, show save modal again
+                                            this.show('save');
+                                        }
                                     }
-                                }
-                            );
-                        }
+                                );
+                            }
+                        }, 100);
                     }
                     return; // Important: return here to prevent fall-through
                 }
@@ -484,11 +492,16 @@ export class SaveLoadModal {
         
         const sessionId = window.gameEngine?.sessionId || 'default';
         
-        if (this.uiManager.modalManager) {
-            this.uiManager.modalManager.showChoiceModal(
-                'Load Game?',
-                ['Yes, load this save', 'No, cancel'],
-                async (choice) => {
+        // Hide the save/load modal first to avoid focus conflicts
+        this.hide();
+        
+        // Small delay to ensure modal is fully hidden before showing choice modal
+        setTimeout(() => {
+            if (this.uiManager.modalManager) {
+                this.uiManager.modalManager.showChoiceModal(
+                    'Load Game?',
+                    ['Yes, load this save', 'No, cancel'],
+                    async (choice) => {
                     if (choice === 1) {
                         try {
                             // Close all modals and clear notifications before loading
@@ -592,7 +605,8 @@ export class SaveLoadModal {
                     }
                 }
             );
-        }
+            }
+        }, 100); // 100ms delay to ensure previous modal is hidden
     }
     
     /**
