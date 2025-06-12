@@ -1,3 +1,43 @@
+"""
+# ⚠️ DEPRECATED - Terminal Game Runner
+# This module is the original terminal-based game runner and is no longer used
+
+**Status**: DEPRECATED as of June 2025
+**Replacement**: Web-based game via api/app.py
+**Reason**: Game has migrated to a full web interface
+
+## Original Purpose
+This was the main terminal game runner that:
+- Used terminal UI functions from ui.py
+- Handled game loop with input() prompts
+- Managed save/load via terminal interface
+- Provided text-based gameplay
+
+## Current State
+The game now runs exclusively through the web interface:
+- Start with: `python api/app.py`
+- Access at: http://localhost:5000
+
+## Dependencies
+This file depends on the deprecated ui.py module and uses:
+- display_dashboard()
+- display_event()
+- display_choices()
+- input() for user interaction
+
+## DO NOT USE
+All game logic has been reimplemented in the web version.
+This file is preserved for historical reference only.
+
+To run the modern web version:
+```bash
+python api/app.py
+```
+
+---
+Original code preserved below for historical reference.
+"""
+
 # Innovative Game: Cosmic Explorer
 # This is a text-based adventure game with unique mechanics and storytelling.
 

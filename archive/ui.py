@@ -1,3 +1,43 @@
+"""
+# ⚠️ DEPRECATED - Terminal UI Module
+# This module is no longer used in Cosmic Explorer
+
+**Status**: DEPRECATED as of June 2025
+**Replacement**: Web-based UI (see /static/js and /templates/index.html)
+**Reason**: Game has migrated to a full web interface with Canvas rendering
+
+## Original Purpose
+This module provided terminal-based UI using the 'blessed' library for:
+- ASCII art ship and player representations
+- Colored terminal output
+- Terminal-based dashboard display
+- Text-based event and choice display
+
+## Current State
+The game now runs exclusively through the web interface:
+- Start with: `python api/app.py`
+- Access at: http://localhost:5000
+
+## Migration Notes
+All UI functionality has been reimplemented in the web interface:
+- Dashboard → Top HUD in web UI
+- ASCII art → Canvas-rendered sprites
+- Terminal colors → CSS styling
+- Text events → Event panel with animations
+
+## Removal Instructions
+To fully remove this deprecated module:
+1. Delete this file (ui.py)
+2. Remove 'blessed' from requirements.txt
+3. Delete any remaining terminal-specific code
+
+---
+Original code preserved below for historical reference only.
+DO NOT USE IN PRODUCTION.
+"""
+
+# ========== DEPRECATED CODE BELOW ==========
+
 # ui.py - Handles UI elements for Cosmic Explorer using blessed for terminal rendering
 
 from blessed import Terminal

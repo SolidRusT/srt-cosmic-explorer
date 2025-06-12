@@ -2,6 +2,8 @@
 
 A stunning space exploration game transformed from ASCII terminal graphics to a beautiful web-based experience!
 
+> ⚠️ **Note**: The original terminal-based UI (`ui.py` and `game.py`) has been deprecated. The game now runs exclusively through the web interface.
+
 ## Features
 
 ### Visual Enhancements

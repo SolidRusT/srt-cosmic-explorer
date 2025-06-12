@@ -99,8 +99,16 @@ class SocketHandler {
             );
             
             if (validChoices.length > 0) {
-                // Only show modal if we have a valid message/title
+                // Only show modal if we have a valid message/title AND we're in the game screen
                 const modalTitle = event.message || event.title || 'Make a Choice';
+                const currentScreen = this.gameEngine.uiManager?.screenManager?.getCurrentScreen?.();
+                
+                // Don't show modals during loading or on main menu
+                if (currentScreen !== 'game') {
+                    console.warn('Ignoring choice modal - not in game screen:', currentScreen);
+                    return;
+                }
+                
                 if (modalTitle && modalTitle.trim().length > 0) {
                     this.gameEngine.uiManager.showChoiceModal(
                         modalTitle, 
