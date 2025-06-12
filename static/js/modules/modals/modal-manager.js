@@ -7,6 +7,10 @@ export class ModalManager {
         this.modalZIndexBase = 1000;
         this.currentModalZIndex = this.modalZIndexBase;
         this.activeModals = [];
+        
+        // Modal queue to prevent overlapping modals
+        this.modalQueue = [];
+        this.isShowingModal = false;
     }
     
     /**
@@ -121,58 +125,79 @@ export class ModalManager {
      * @param {Function} callback - The callback function when a choice is made
      */
     showChoiceModal(title, choices, callback) {
-        const modal = document.getElementById('choice-modal');
-        const titleEl = document.getElementById('choice-title');
-        const choiceList = document.getElementById('choice-list');
-        const modalFooter = modal?.querySelector('.modal-footer');
-        
-        if (!modal || !titleEl || !choiceList) {
-            console.error('Choice modal elements not found');
+        // Queue the modal if another modal is being shown
+        if (this.isShowingModal) {
+            console.log('[ModalManager] Queuing choice modal:', title);
+            this.modalQueue.push(() => this.showChoiceModal(title, choices, callback));
             return;
         }
         
-        // Clear any existing content first
-        choiceList.innerHTML = '';
+        this.isShowingModal = true;
         
-        // Validate choices array
-        if (!Array.isArray(choices) || choices.length === 0) {
-            console.error('Invalid choices array:', choices);
-            // Don't show the modal if there are no valid choices
-            return;
-        }
+        // Ensure any previous modals are properly closed
+        this.cleanupAllModals();
         
-        // Filter out any empty or invalid choices
-        const validChoices = choices.filter(choice => 
-            typeof choice === 'string' && choice.trim().length > 0
-        );
-        
-        if (validChoices.length === 0) {
-            console.error('No valid choices after filtering:', choices);
-            return;
-        }
-        
-        // Set title
-        titleEl.textContent = title || 'Make a Choice';
-        
-        // Hide footer for normal choices
-        if (modalFooter) modalFooter.style.display = 'none';
-        
-        // Add choices
-        validChoices.forEach((choice, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'choice-btn';
-            btn.textContent = `${index + 1}. ${choice}`;
-            btn.onclick = () => {
-                this.hideChoiceModal();
-                if (callback) callback(index + 1);
-            };
-            choiceList.appendChild(btn);
-        });
-        
-        // Set up close handlers
-        this.setupChoiceModalHandlers(modal, callback);
-        
-        this.trackModal(modal);
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+            const modal = document.getElementById('choice-modal');
+            const titleEl = document.getElementById('choice-title');
+            const choiceList = document.getElementById('choice-list');
+            const modalFooter = modal?.querySelector('.modal-footer');
+            
+            if (!modal || !titleEl || !choiceList) {
+                console.error('Choice modal elements not found');
+                this.isShowingModal = false;
+                this.processModalQueue();
+                return;
+            }
+            
+            // Clear any existing content first
+            choiceList.innerHTML = '';
+            
+            // Validate choices array
+            if (!Array.isArray(choices) || choices.length === 0) {
+                console.error('Invalid choices array:', choices);
+                // Don't show the modal if there are no valid choices
+                this.isShowingModal = false;
+                this.processModalQueue();
+                return;
+            }
+            
+            // Filter out any empty or invalid choices
+            const validChoices = choices.filter(choice => 
+                typeof choice === 'string' && choice.trim().length > 0
+            );
+            
+            if (validChoices.length === 0) {
+                console.error('No valid choices after filtering:', choices);
+                this.isShowingModal = false;
+                this.processModalQueue();
+                return;
+            }
+            
+            // Set title
+            titleEl.textContent = title || 'Make a Choice';
+            
+            // Hide footer for normal choices
+            if (modalFooter) modalFooter.style.display = 'none';
+            
+            // Add choices
+            validChoices.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = `${index + 1}. ${choice}`;
+                btn.onclick = () => {
+                    this.hideChoiceModal();
+                    if (callback) callback(index + 1);
+                };
+                choiceList.appendChild(btn);
+            });
+            
+            // Set up close handlers
+            this.setupChoiceModalHandlers(modal, callback);
+            
+            this.trackModal(modal);
+        }, 50); // 50ms delay to ensure DOM is ready
     }
     
     /**
@@ -246,5 +271,49 @@ export class ModalManager {
         const modal = document.getElementById('choice-modal');
         this.cleanupChoiceModalHandlers();
         this.hideModal(modal, false);
+        this.isShowingModal = false;
+        
+        // Process any queued modals
+        setTimeout(() => {
+            this.processModalQueue();
+        }, 100);
+    }
+    
+    /**
+     * Process any modals waiting in the queue
+     */
+    processModalQueue() {
+        if (this.modalQueue.length > 0 && !this.isShowingModal) {
+            const nextModal = this.modalQueue.shift();
+            if (nextModal) {
+                console.log('[ModalManager] Processing queued modal');
+                nextModal();
+            }
+        }
+    }
+    
+    /**
+     * Clean up all modals and their content
+     */
+    cleanupAllModals() {
+        // Clean up choice modal
+        const choiceModal = document.getElementById('choice-modal');
+        if (choiceModal) {
+            const choiceList = document.getElementById('choice-list');
+            if (choiceList) {
+                choiceList.innerHTML = '';
+            }
+            choiceModal.style.display = 'none';
+            choiceModal.style.animation = 'none';
+        }
+        
+        // Clean up any other dynamic modals
+        ['save-load-modal', 'pod-mods-modal', 'food-modal', 'ship-modal', 'star-map-modal'].forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.animation = 'none';
+            }
+        });
     }
 }

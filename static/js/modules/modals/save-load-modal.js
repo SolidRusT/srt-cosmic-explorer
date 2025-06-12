@@ -5,6 +5,7 @@ export class SaveLoadModal {
     constructor(uiManager) {
         this.uiManager = uiManager;
         this.currentSaveLoadMode = 'save';
+        this._isLoading = false; // Prevent duplicate load operations
         this.initStyles();
     }
     
@@ -272,6 +273,8 @@ export class SaveLoadModal {
         if (this.uiManager.modalManager) {
             this.uiManager.modalManager.hideModal(modal, true);
         }
+        // Reset loading flag when hiding modal
+        this._isLoading = false;
     }
     
     /**
@@ -481,27 +484,46 @@ export class SaveLoadModal {
      * @param {number} slot - The slot number
      */
     async loadFromSlot(slot) {
-        console.warn('[DEBUG] loadFromSlot called with slot:', slot);
-        console.trace('Stack trace for loadFromSlot call');
+        console.log('[SaveLoadModal] loadFromSlot called with slot:', slot);
         
         // Safety check - don't load if we're in the middle of starting a new game
         if (window.gameEngine && window.gameEngine._startingNewGame) {
-            console.warn('[DEBUG] Blocked loadFromSlot during new game start');
+            console.warn('[SaveLoadModal] Blocked loadFromSlot during new game start');
             return;
         }
         
         const sessionId = window.gameEngine?.sessionId || 'default';
         
-        // Hide the save/load modal first to avoid focus conflicts
-        this.hide();
+        // First, ensure we're not already processing a load
+        if (this._isLoading) {
+            console.warn('[SaveLoadModal] Already loading, ignoring duplicate request');
+            return;
+        }
         
-        // Small delay to ensure modal is fully hidden before showing choice modal
-        setTimeout(() => {
-            if (this.uiManager.modalManager) {
-                this.uiManager.modalManager.showChoiceModal(
-                    'Load Game?',
-                    ['Yes, load this save', 'No, cancel'],
-                    async (choice) => {
+        this._isLoading = true;
+        
+        // Hide the save/load modal immediately
+        const modal = document.getElementById('save-load-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.style.animation = 'none';
+        }
+        
+        // Clear any existing modals
+        if (this.uiManager.modalManager) {
+            this.uiManager.modalManager.cleanupAllModals();
+        }
+        
+        // Longer delay to ensure proper cleanup
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Now show the confirmation modal
+        if (this.uiManager.modalManager) {
+            this.uiManager.modalManager.showChoiceModal(
+                'Load Game?',
+                ['Yes, load this save', 'No, cancel'],
+                async (choice) => {
+                    this._isLoading = false;
                     if (choice === 1) {
                         try {
                             // Close all modals and clear notifications before loading
@@ -605,8 +627,9 @@ export class SaveLoadModal {
                     }
                 }
             );
-            }
-        }, 100); // 100ms delay to ensure previous modal is hidden
+        } else {
+            this._isLoading = false;
+        }
     }
     
     /**
