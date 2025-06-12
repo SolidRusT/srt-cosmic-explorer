@@ -2,7 +2,7 @@
 title: Archive Index
 tags: [archive, index, history]
 created: 2025-06-10
-updated: 2025-06-11
+updated: 2025-06-12
 status: active
 ---
 
@@ -26,6 +26,12 @@ Historical record of issues and resolutions:
 - Camera centering
 - UI layering problems
 
+### 🚫 [[deprecation/index|Deprecation Records]]
+Documentation for deprecated features:
+- Terminal UI deprecation (June 2025)
+- Removed dependencies
+- Migration guides
+
 ### 📋 [[feature-docs/index|Feature Documentation]]
 Original implementation documentation:
 - Save/load system design
@@ -47,9 +53,10 @@ Initial system design and structure before modularization.
 | Category | Count | Last Updated |
 |----------|-------|--------------|
 | Status Updates | 17 | 2025-06-11 |
-| Bug Fixes | 7 | 2025-06-10 |
+| Bug Fixes | 8 | 2025-06-12 |
 | Feature Docs | 11 | 2025-06-11 |
 | Refactoring Docs | 3 | 2025-06-11 |
+| Deprecation Docs | 3 | 2025-06-12 |
 
 ## 🔍 Using the Archive
 
@@ -106,6 +113,8 @@ When updating current documentation:
 ## 🔗 Quick Access
 
 ### Recent Additions
+- [[deprecation/2025-06-12-terminal-ui-summary|Terminal UI Deprecation]] - Complete migration to web
+- [[bug-fixes/2025-06/modal-system-analysis-and-fix|Modal System Fix]] - Major debugging improvements
 - [[status-updates/2025-06-11-music-engine-modularization|Music Engine Modularization]] - 40+ modular layers
 - [[status-updates/2025-06-11-ui-modularization-documentation|UI Modularization Documentation]] - 15 UI modules
 - [[status-updates/2025-06-11-star-map-implementation|Star Map Implementation]] - Click-to-travel feature
@@ -143,6 +152,8 @@ When updating current documentation:
 - Major refactoring
 - Bug fixes
 - Documentation overhaul
+- Terminal UI deprecation
+- Modal system improvements
 - Current state achieved
 
 ---

@@ -1,173 +1,162 @@
-# Cosmic Explorer - Graphical Edition
+# Cosmic Explorer 🚀
 
-A stunning space exploration game transformed from ASCII terminal graphics to a beautiful web-based experience!
+A stunning space exploration game with beautiful web-based graphics, procedural music, and immersive gameplay!
 
-> ⚠️ **Note**: The original terminal-based UI (`ui.py` and `game.py`) has been deprecated. The game now runs exclusively through the web interface.
+## ✨ Features
 
-## Features
+### 🎮 Gameplay
+- **Open-world space exploration** with dynamic encounters
+- **Real-time combat** with multiple weapon types
+- **Pod augmentation system** for ship upgrades
+- **Trading economy** across different space stations
+- **Quest system** with branching storylines
+- **Save/Load functionality** with 5 save slots
 
-### Visual Enhancements
+### 🎨 Visual Experience
+- **Dynamic space environment** with animated stars and colorful nebulae
+- **Smooth ship animations** with particle thrust effects
+- **Procedurally generated universe** with planets, stations, and asteroid fields
+- **Visual damage system** showing ship condition in real-time
+- **Glass-morphism UI** with modern, translucent interface panels
 
-- **Dynamic Space Environment**: Animated stars, colorful nebulae, and parallax effects
-- **Smooth Ship Animations**: Real-time movement with particle thrust effects
-- **Procedurally Generated Universe**: Planets, space stations, and asteroid fields
-- **Visual Damage System**: Ship appearance changes based on condition
-- **Particle Effects**: Explosions, healing, warp drive, and more
-- **Glass-morphism UI**: Modern, translucent interface panels
+### 🎵 Audio System
+- **Procedural Music Engine**
+  - 5 dynamic tracks that adapt to gameplay
+  - 40+ musical layers across all tracks
+  - Advanced music theory with complex chord progressions
+  - Real-time adaptation to game state
+  
+- **Sound Effects System**
+  - 20+ procedural sound effects
+  - Contextual audio for different actions
+  - Dynamic warnings and alerts
+  - 100% Web Audio API - no external files
 
-### Audio System
-
-#### 🎵 Procedural Music Engine
-- **5 Dynamic Tracks**: Exploration, Station, Danger, Combat, Pod Emergency
-- **12-15 Layers Per Track**: Deep drones, arpeggios, percussion, atmospheric effects
-- **Advanced Music Theory**: 8-chord progressions with 9ths, 11ths, and 13ths
-- **Professional Effects**: Reverb, delay, compression, stereo widening
-- **Real-time Adaptation**: Music responds to health, location, combat state
-
-#### 🔊 Sound Effects System  
-- **20+ Procedural Effects**: All generated in real-time, no files needed!
-- **Contextual Sounds**: Different weapons, item rarities, UI interactions
-- **Dynamic Warnings**: Low fuel, health critical, system alerts
-- **Environmental Audio**: Docking, mining, scanning sounds
-- **100% Web Audio API**: No external dependencies
-
-### Gameplay Features
-
-- Real-time WebSocket updates
-- Smooth 60fps rendering
-- Keyboard shortcuts for quick actions
-- Visual quest indicators
-- Critical stat warnings
-- Choice modals for decisions
-- Event log with timestamps
-
-## Running the Game
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Python 3.8+
+- Python 3.8 or higher
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 
 ### Installation
 
-1. Clone the repository:
-
 ```bash
-cd /home/shaun/repos/cosmic-explorer
-```
+# Clone and enter the repository
+cd cosmic-explorer
 
-2. Create a virtual environment:
-
-```bash
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. Install dependencies:
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Starting the Game
-
-1. Run the Flask server:
+### Running the Game
 
 ```bash
-# Linux/Mac:
-./start_game.sh
+# Start the game server
+./start_game.sh      # Linux/Mac
+start_game.bat       # Windows
+python api/app.py    # Manual start
 
-# Windows:
-start_game.bat
-
-# Or manually:
-python api/app.py
-```
-
-2. Open your browser and navigate to:
-
-```
+# Open in browser
 http://localhost:5000
 ```
 
-3. Enjoy the game!
+## 🎮 Controls
 
-## Controls
+### Keyboard Shortcuts
+- `1-6` - Quick actions (navigate, scan, repair, inventory, quests, star map)
+- `ESC` - Return to main menu
+- `Ctrl+Shift+C` - Emergency modal close (if stuck)
+- `Ctrl+Shift+M` - Toggle debug overlay
 
 ### Mouse
+- Click buttons and navigate menus
+- Hover for tooltips and information
 
-- Click buttons to perform actions
-- Navigate menus
+## 🏗️ Architecture
 
-### Keyboard (In-Game)
-
-- `1` - Navigate to new location
-- `2` - Scan area
-- `3` - Repair ship (when at station)
-- `4` - Open inventory
-- `5` - View quests
-- `6` - Open star map
-- `ESC` - Return to main menu
-
-## Architecture
+The game features a modern, modular architecture:
 
 ### Backend (Python/Flask)
+- RESTful API with WebSocket support
+- Game state management
+- Save/Load system
+- Real-time synchronization
 
-- `api/app.py` - Flask server with REST API and WebSocket support
-- Original game logic preserved in Python files
-- Real-time game state synchronization
+### Frontend (JavaScript)
+- **Modular UI system** - Clean component architecture
+- **Canvas rendering engine** - Smooth 60fps graphics
+- **Particle effects system** - Dynamic visual effects
+- **Procedural audio** - Real-time sound generation
 
-### Frontend (HTML5/Canvas)
+### Key Systems
+- `static/js/modules/` - Modularized JavaScript components
+- `api/` - Python backend with game logic
+- `static/css/` - Responsive styling with CSS variables
 
-- `static/js/renderer.js` - Canvas rendering engine
-- `static/js/particles.js` - Particle effects system
-- `static/js/audio.js` - Sound management
-- `static/js/ui.js` - UI components and HUD
-- `static/js/game.js` - Main game engine
+## 📚 Documentation
 
-### Visual Design
+Comprehensive documentation is available in the `docs/` folder:
 
-- Dark space theme with neon accents
-- Glassmorphism UI elements
-- Smooth animations and transitions
-- Responsive design for all screen sizes
+- **[Architecture Overview](docs/architecture/overview.md)** - System design
+- **[Getting Started Guide](docs/guides/getting-started/quickstart.md)** - Detailed setup
+- **[API Reference](docs/references/api/endpoints.md)** - Backend endpoints
+- **[Troubleshooting](docs/guides/troubleshooting/common-issues.md)** - Common issues
 
-## Development
+## 🛠️ Development
 
-### Adding New Features
+### Adding Features
+- **Visual Effects**: Add to `static/js/particles.js`
+- **Sound Effects**: Extend `static/js/modules/audio/`
+- **UI Components**: Create in `static/js/modules/ui/`
+- **Game Logic**: Update `api/` Python files
 
-1. **New Visual Effects**: Add to `particles.js`
-2. **New Sound Effects**: Add to `audio.js`
-3. **New UI Elements**: Modify `ui.js` and `game.css`
-4. **New Game Actions**: Update `api/app.py` and `game.js`
+### Project Structure
+```
+cosmic-explorer/
+├── api/                 # Python backend
+├── static/              # Frontend assets
+│   ├── js/modules/     # Modular JavaScript
+│   ├── css/            # Styling
+│   └── sounds/         # Audio assets
+├── templates/          # HTML templates
+└── docs/              # Documentation
+```
 
-### Customization
+## 🎯 Roadmap
 
-- Modify `static/js/config.js` for game settings
-- Edit `static/css/game.css` for visual styling
-- Update color schemes in CSS variables
+### Completed ✅
+- Web-based UI migration
+- Procedural music system
+- Sound effects engine
+- Save/Load functionality
+- Modal system improvements
+- UI modularization
 
-## Credits
+### In Progress 🚧
+- Interactive star map
+- Enhanced combat visuals
 
-- Original ASCII version created with x.ai Grok-3
-- Graphical transformation by Claude Opus 4
-- Built with Flask, Socket.IO, and HTML5 Canvas
+### Planned 📋
+- Sprite-based graphics
+- Ship customization UI
+- Multiplayer support
+- Mobile touch controls
+- Achievement system
 
-## Future Enhancements
+## 🤝 Contributing
 
-- [ ] Sprite-based graphics (PNG assets)
-- [x] Save/Load game functionality (5 save slots)
-- [ ] Interactive star map (partial implementation)
-- [ ] Ship customization UI
-- [ ] Multiplayer support
-- [ ] Mobile touch controls
-- [ ] Achievement system
-- [ ] Leaderboards
+Contributions are welcome! Please check the [documentation](docs/README.md) for coding standards and guidelines.
 
-## License
+## 📄 License
 
 This project is open source and available under the MIT License.
 
 ---
 
-Enjoy exploring the cosmos in stunning visual detail! 🚀✨
+**Ready to explore the cosmos?** Start the game and embark on your space adventure! 🌟
+
+*Created with the assistance of Anthropic's Claude and xAI's Grok.*

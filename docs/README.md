@@ -2,7 +2,7 @@
 title: Cosmic Explorer Documentation
 tags: [documentation, index, navigation]
 created: 2025-06-10
-updated: 2025-06-10
+updated: 2025-06-12
 status: active
 ---
 
