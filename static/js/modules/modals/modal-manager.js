@@ -125,6 +125,23 @@ export class ModalManager {
      * @param {Function} callback - The callback function when a choice is made
      */
     showChoiceModal(title, choices, callback) {
+        console.log('[ModalManager] showChoiceModal called with:', { title, choices });
+        
+        // Enhanced validation - reject if we're in wrong state
+        const currentScreen = window.gameUI?.screenManager?.getCurrentScreen?.();
+        console.log('[ModalManager] Current screen:', currentScreen);
+        
+        if (!currentScreen || currentScreen === 'loading' || currentScreen === 'mainMenu') {
+            console.warn('[ModalManager] Blocked modal - invalid screen state:', currentScreen);
+            return;
+        }
+        
+        // Extra validation - don't show if choices are undefined, null, or not an array
+        if (!choices || !Array.isArray(choices)) {
+            console.error('[ModalManager] Blocked modal - choices is not an array:', choices);
+            return;
+        }
+        
         // Queue the modal if another modal is being shown
         if (this.isShowingModal) {
             console.log('[ModalManager] Queuing choice modal:', title);
@@ -143,9 +160,10 @@ export class ModalManager {
             const titleEl = document.getElementById('choice-title');
             const choiceList = document.getElementById('choice-list');
             const modalFooter = modal?.querySelector('.modal-footer');
+            const closeBtn = modal?.querySelector('.modal-close');
             
             if (!modal || !titleEl || !choiceList) {
-                console.error('Choice modal elements not found');
+                console.error('[ModalManager] Choice modal elements not found');
                 this.isShowingModal = false;
                 this.processModalQueue();
                 return;
@@ -156,7 +174,7 @@ export class ModalManager {
             
             // Validate choices array
             if (!Array.isArray(choices) || choices.length === 0) {
-                console.error('Invalid choices array:', choices);
+                console.error('[ModalManager] Invalid choices array:', choices);
                 // Don't show the modal if there are no valid choices
                 this.isShowingModal = false;
                 this.processModalQueue();
@@ -169,17 +187,29 @@ export class ModalManager {
             );
             
             if (validChoices.length === 0) {
-                console.error('No valid choices after filtering:', choices);
+                console.error('[ModalManager] No valid choices after filtering:', choices);
                 this.isShowingModal = false;
                 this.processModalQueue();
                 return;
             }
+            
+            console.log('[ModalManager] Showing modal with valid choices:', validChoices);
             
             // Set title
             titleEl.textContent = title || 'Make a Choice';
             
             // Hide footer for normal choices
             if (modalFooter) modalFooter.style.display = 'none';
+            
+            // Ensure close button is visible and properly positioned
+            if (closeBtn) {
+                closeBtn.style.display = 'flex';
+                closeBtn.style.position = 'absolute';
+                closeBtn.style.top = '1rem';
+                closeBtn.style.right = '1rem';
+                closeBtn.style.left = 'auto';
+                closeBtn.style.zIndex = '10';
+            }
             
             // Add choices
             validChoices.forEach((choice, index) => {
@@ -209,11 +239,24 @@ export class ModalManager {
         // Remove any existing handlers
         this.cleanupChoiceModalHandlers();
         
-        // Close button handler
+        // Close button handler - use event delegation to ensure it works
         const closeBtn = modal.querySelector('.modal-close');
         if (closeBtn) {
-            this._choiceCloseHandler = () => this.hideChoiceModal();
-            closeBtn.addEventListener('click', this._choiceCloseHandler);
+            this._choiceCloseHandler = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('[ModalManager] Close button clicked');
+                this.hideChoiceModal();
+            };
+            // Use both click and mousedown to ensure it fires
+            closeBtn.addEventListener('click', this._choiceCloseHandler, true);
+            closeBtn.addEventListener('mousedown', this._choiceCloseHandler, true);
+            
+            // Make sure button is interactive
+            closeBtn.style.pointerEvents = 'auto';
+            closeBtn.style.cursor = 'pointer';
+        } else {
+            console.error('[ModalManager] Close button not found!');
         }
         
         // Backdrop click handler
@@ -221,6 +264,7 @@ export class ModalManager {
         if (backdrop) {
             this._choiceBackdropHandler = (e) => {
                 if (e.target === backdrop) {
+                    console.log('[ModalManager] Backdrop clicked');
                     this.hideChoiceModal();
                 }
             };
@@ -231,6 +275,7 @@ export class ModalManager {
         this._choiceEscHandler = (e) => {
             if (e.key === 'Escape' && this.activeModals.includes(modal)) {
                 e.preventDefault();
+                console.log('[ModalManager] ESC key pressed');
                 this.hideChoiceModal();
             }
         };
@@ -248,7 +293,8 @@ export class ModalManager {
         const backdrop = modal.querySelector('.modal-backdrop');
         
         if (closeBtn && this._choiceCloseHandler) {
-            closeBtn.removeEventListener('click', this._choiceCloseHandler);
+            closeBtn.removeEventListener('click', this._choiceCloseHandler, true);
+            closeBtn.removeEventListener('mousedown', this._choiceCloseHandler, true);
         }
         
         if (backdrop && this._choiceBackdropHandler) {

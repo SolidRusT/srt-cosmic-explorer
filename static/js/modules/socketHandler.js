@@ -71,6 +71,8 @@ class SocketHandler {
     }
     
     handleGameEvent(event) {
+        console.log('[SocketHandler] Received game event:', event);
+        
         // Add to event log
         this.gameEngine.uiManager.addEventMessage(event.message, event.type);
         
@@ -93,35 +95,60 @@ class SocketHandler {
         // Ensure choices exist, are an array, and have at least one element
         if (event.choices && Array.isArray(event.choices) && event.choices.length > 0 && 
             event.type !== 'combat_start' && event.type !== 'combat') {
+            console.log('[SocketHandler] Event has choices:', event.choices);
+            
             // Validate that choices are strings and not empty
             const validChoices = event.choices.filter(choice => 
                 typeof choice === 'string' && choice.trim().length > 0
             );
+            
+            console.log('[SocketHandler] Valid choices after filtering:', validChoices);
             
             if (validChoices.length > 0) {
                 // Only show modal if we have a valid message/title AND we're in the game screen
                 const modalTitle = event.message || event.title || 'Make a Choice';
                 const currentScreen = this.gameEngine.uiManager?.screenManager?.getCurrentScreen?.();
                 
+                console.log('[SocketHandler] Current screen:', currentScreen);
+                console.log('[SocketHandler] Is initializing:', this.gameEngine.isInitializing);
+                console.log('[SocketHandler] Is loading game:', this.gameEngine.isLoadingGame);
+                console.log('[SocketHandler] Has game state:', !!this.gameEngine.gameState);
+                
                 // Don't show modals during loading or on main menu
                 if (currentScreen !== 'game') {
-                    console.warn('Ignoring choice modal - not in game screen:', currentScreen);
+                    console.warn('[SocketHandler] Ignoring choice modal - not in game screen:', currentScreen);
+                    return;
+                }
+                
+                // Additional check - don't show modals during game initialization
+                if (this.gameEngine.isInitializing || this.gameEngine.isLoadingGame) {
+                    console.warn('[SocketHandler] Ignoring choice modal - game is initializing');
+                    return;
+                }
+                
+                // Check if this is a stale event (e.g., from previous game session)
+                if (!this.gameEngine.gameState || !this.gameEngine.gameState.session_id) {
+                    console.warn('[SocketHandler] Ignoring choice modal - no active game session');
                     return;
                 }
                 
                 if (modalTitle && modalTitle.trim().length > 0) {
-                    this.gameEngine.uiManager.showChoiceModal(
-                        modalTitle, 
-                        validChoices, 
-                        (choice) => {
-                            this.gameEngine.sendAction('choice', { choice });
-                        }
-                    );
+                    console.log('[SocketHandler] Showing choice modal with title:', modalTitle);
+                    // Add a small delay to ensure game screen is fully loaded
+                    setTimeout(() => {
+                        this.gameEngine.uiManager.showChoiceModal(
+                            modalTitle, 
+                            validChoices, 
+                            (choice) => {
+                                this.gameEngine.sendAction('choice', { choice });
+                            }
+                        );
+                    }, 100);
                 } else {
-                    console.warn('Event had no valid title/message for choices:', event);
+                    console.warn('[SocketHandler] Event had no valid title/message for choices:', event);
                 }
             } else {
-                console.warn('Event had invalid choices:', event.choices);
+                console.warn('[SocketHandler] Event had invalid choices:', event.choices);
             }
         }
     }
