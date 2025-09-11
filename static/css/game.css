@@ -515,13 +515,36 @@ body {
 #choice-modal .modal-content {
     position: relative;
     z-index: 2;
+    min-height: 200px; /* Ensure minimum height for visibility */
+}
+
+/* Ensure the choice modal structure is correct */
+#choice-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+#choice-modal .modal-backdrop {
+    cursor: pointer;
+}
+
+#choice-modal .modal-close {
+    /* Specific positioning for choice modal close button */
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    left: auto !important;
 }
 
 /* Modal close button styling - ensure proper positioning */
 .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
     left: auto !important;  /* Force right alignment */
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -532,12 +555,14 @@ body {
     padding: 0;
     width: 36px;
     height: 36px;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     border-radius: 50%;
     z-index: 10;
+    pointer-events: auto !important;
+    opacity: 1 !important;
 }
 
 .modal-close:hover {

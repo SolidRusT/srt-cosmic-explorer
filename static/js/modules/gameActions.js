@@ -32,6 +32,9 @@ class GameActions {
     }
     
     async startNewGame() {
+        // Set initialization flag
+        this.gameEngine.isInitializing = true;
+        
         // Clear any existing save data to force new star map generation
         localStorage.removeItem('cosmic_explorer_save');
         
@@ -59,6 +62,11 @@ class GameActions {
             // Show welcome message
             this.gameEngine.uiManager.addEventMessage('Welcome to Cosmic Explorer! Your journey begins...', 'info');
         }
+        
+        // Clear initialization flag after a delay
+        setTimeout(() => {
+            this.gameEngine.isInitializing = false;
+        }, 1000);
         
         return result;
     }

@@ -74,6 +74,60 @@ modalDebug.checkState()     // Check modal state
 modalDebug.testValidModal() // Test working modal
 ```
 
+### `modal_fix_utility.js` (NEW - June 2025)
+Comprehensive modal fix and debugging utility.
+- Emergency modal close functionality
+- Enhanced debugging information
+- Permanent fix application
+- Close button position correction
+
+Usage:
+```javascript
+// Copy entire file contents to browser console, then:
+modalFix.closeAll()           // Emergency close all modals
+modalFix.fixChoiceModal()     // Fix stuck choice modal with close button
+modalFix.debug()              // Show detailed debug information
+modalFix.test()               // Test modal functionality
+modalFix.applyPermanentFixes() // Apply permanent fixes to modal system
+```
+
+### `modal_test_suite.js` (NEW - June 2025)
+Automated test suite for modal functionality.
+- Tests basic modal operations
+- Validates empty modal prevention
+- Checks all close methods (X button, backdrop, ESC)
+- Provides detailed test results
+
+Usage:
+```javascript
+// Copy entire file contents to browser console, then:
+modalTests.runAll()           // Run complete test suite
+modalTests.testBasicModal()   // Test basic functionality
+modalTests.testEmptyModalPrevention() // Test empty modal blocking
+modalTests.testCloseMethod()  // Test all close methods
+```
+
+## Emergency Modal Recovery
+
+If you get stuck in a modal during gameplay:
+
+### Quick Fix (Built-in)
+```javascript
+// Press F12 to open console and run:
+window.uiManager.closeAllModals()
+```
+
+### Comprehensive Fix
+```javascript
+// Copy modal_fix_utility.js contents to console, then:
+modalFix.closeAll()           // Close all modals
+modalFix.fixChoiceModal()     // Fix close button if needed
+```
+
+### Keyboard Shortcut
+- Press `ESC` key to close modals
+- Press `Ctrl+Shift+C` for emergency modal close (if implemented)
+
 ## Adding New Tools
 
 When adding new utility scripts:
