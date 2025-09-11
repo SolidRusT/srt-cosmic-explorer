@@ -164,7 +164,7 @@
                 </div>
 
                 <!-- Modal for choices -->
-                <div id="choice-modal" class="modal" style="display: none;">
+                <div id="choice-modal" class="modal" style="display: none !important;">
                     <div class="modal-backdrop"></div>
                     <div class="modal-content">
                         <button class="modal-close" aria-label="Close modal">×</button>
@@ -253,6 +253,57 @@
     <script type="module" src="{{ url_for('static', filename='js/modules/debug/startup-modal-fix.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/modules/debug/modal-diagnostic.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modules/modal-comprehensive-fix.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/emergency-modal-blocker.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Inline emergency modal fix -->
+    <script>
+    (function() {
+        // Force hide modal on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('choice-modal');
+            if (modal) {
+                modal.style.setProperty('display', 'none', 'important');
+                
+                // Clear any content
+                const choiceList = document.getElementById('choice-list');
+                if (choiceList) {
+                    choiceList.innerHTML = '';
+                }
+            }
+            
+            console.log('✅ Modal force-hidden on page load');
+        });
+        
+        // Global emergency function (easier to type)
+        window.fix = function() {
+            const modal = document.getElementById('choice-modal');
+            if (modal) {
+                modal.style.setProperty('display', 'none', 'important');
+                modal.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                modal.style.pointerEvents = 'none';
+            }
+            
+            // Clear all modal content
+            const choiceList = document.getElementById('choice-list');
+            if (choiceList) {
+                choiceList.innerHTML = '';
+            }
+            
+            // Reset modal manager
+            if (window.uiManager?.modalManager) {
+                window.uiManager.modalManager.isShowingModal = false;
+                window.uiManager.modalManager.modalQueue = [];
+                window.uiManager.modalManager.activeModals = [];
+            }
+            
+            console.log('✅ Modal fixed! You can now play.');
+            return 'Fixed!';
+        };
+        
+        console.log('🔧 If modal appears, just type: fix()');
+    })();
+    </script>
 </body>
 </html>

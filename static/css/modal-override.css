@@ -1,0 +1,34 @@
+/* Emergency Modal Override CSS */
+/* This file forces the choice modal to stay hidden unless explicitly shown with content */
+
+/* Force hide the modal by default */
+#choice-modal {
+    display: none !important;
+}
+
+/* Only show when it has the 'active-with-content' class */
+#choice-modal.active-with-content {
+    display: flex !important;
+}
+
+/* Extra safeguard - hide if choice list is empty */
+#choice-modal:has(#choice-list:empty) {
+    display: none !important;
+}
+
+/* Hide modal if it has no valid choices */
+#choice-modal:not(:has(.choice-btn)) {
+    display: none !important;
+}
+
+/* Make close button always visible and clickable */
+#choice-modal .modal-close {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    display: flex !important;
+}
