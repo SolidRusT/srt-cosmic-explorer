@@ -1,0 +1,69 @@
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# Development
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+!README-K8S.md
+docs/
+archive/
+dev/
+
+# Tests
+tests/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node modules (if any)
+node_modules/
+
+# Kubernetes and scripts
+k8s/
+*.ps1
+*.bat
+*.sh
+
+# Application data
+saves/
+!saves/.gitkeep
+
+# Config
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+dist/
+build/
+*.egg
+
+# CI/CD
+.pre-commit-config*.yaml
+Makefile
