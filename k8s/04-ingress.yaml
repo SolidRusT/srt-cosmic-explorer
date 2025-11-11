@@ -11,9 +11,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     # WebSocket support for Flask-SocketIO
     nginx.ingress.kubernetes.io/websocket-services: "cosmic-explorer"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
 spec:
   ingressClassName: nginx
   tls:
