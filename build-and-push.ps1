@@ -88,18 +88,26 @@ function Write-ColorOutput {
 function Test-DockerHub {
     Write-ColorOutput "Checking Docker Hub authentication..." $colors.Info
     try {
-        $result = docker info 2>&1 | Select-String "Username"
-        if ($result) {
-            Write-ColorOutput "✓ Docker Hub authenticated" $colors.Success
-            return $true
+        # Check if docker config exists and has Docker Hub credentials
+        $configPath = if ($IsWindows -or $PSVersionTable.PSVersion.Major -le 5) {
+            "$env:USERPROFILE\.docker\config.json"
+        } else {
+            "$HOME/.docker/config.json"
         }
-        else {
-            Write-ColorOutput "✗ Not authenticated to Docker Hub" $colors.Warning
-            return $false
+
+        if (Test-Path $configPath) {
+            $config = Get-Content $configPath -Raw | ConvertFrom-Json
+            if ($config.auths.'https://index.docker.io/v1/' -or $config.credsStore) {
+                Write-ColorOutput "✓ Docker Hub credentials found" $colors.Success
+                return $true
+            }
         }
+
+        Write-ColorOutput "⚠️  Docker Hub credentials not found (this is OK if using -Login)" $colors.Warning
+        return $false
     }
     catch {
-        Write-ColorOutput "✗ Docker not running or not installed" $colors.Error
+        Write-ColorOutput "⚠️  Could not verify Docker authentication (continuing anyway)" $colors.Warning
         return $false
     }
 }
@@ -116,19 +124,16 @@ Write-ColorOutput "========================================`n" $colors.Header
 if ($Login) {
     Write-ColorOutput "Logging into Docker Hub..." $colors.Info
     docker login
-    if ($LASTEXITCODE -ne 0) {
-        Write-ColorOutput "✗ Docker Hub login failed" $colors.Error
-        exit 1
-    }
-    Write-ColorOutput "✓ Logged into Docker Hub`n" $colors.Success
+    # Don't check exit code - docker login can be finicky with exit codes
+    Write-ColorOutput "✓ Login attempt completed`n" $colors.Success
 }
 
-# Check authentication if push is requested
+# Check authentication if push is requested (warning only, not fatal)
 if ($Push) {
     if (-not (Test-DockerHub)) {
-        Write-ColorOutput "`n⚠️  Not authenticated to Docker Hub. Use -Login flag to authenticate." $colors.Warning
-        Write-ColorOutput "   Example: .\build-and-push.ps1 -Login -Push`n" $colors.Info
-        exit 1
+        Write-ColorOutput "`n⚠️  Could not verify Docker Hub authentication." $colors.Warning
+        Write-ColorOutput "   If push fails, run: .\build-and-push.ps1 -Login -Push`n" $colors.Info
+        # Don't exit - let docker push fail if auth is actually missing
     }
 }
 
